@@ -5,13 +5,21 @@
  		Box = function() {
             this.l = 1000;
             this.h = 1500;
-            this.padding = 0;
-			this.L = 35 * this.l + 34 * this.padding;
+            this.padding = 200;
+			this.L = 65 * this.l + 64 * this.padding;
 			this.H = 15 * this.h + 14 * this.padding;
             this.Ox = this.L/2;
-            this.Oy = this.h;
+            this.Oy = this.H/2;
 			this.container = "mapId";
 			this.canvas = "svgBox";
+            this.default = {
+                fill : '#999'
+            };
+            
+            this.lineColors = [];
+            this.lineColors[0] = 'black';
+            this.lineColors[-1] = 'red';
+            this.lineColors[1] = 'green';
 
 			this.real = function() {
 				let el = document.getElementById(this.container);
@@ -33,7 +41,8 @@
             this.yMap[-1] = this.l;
             this.yMap[1] = this.h;
             
-            
+            this.lines = [];
+            this.teils = [];
 		};
 
 	box = new Box();
@@ -55,50 +64,94 @@
 
 // -----------------------
 
-    Box.prototype.getData = function(table) {
+    Box.prototype.getData = function(table, page) {
         var xhr = new XMLHttpRequest(),
-        api = {
-            line : 'http://joo25.loc/lines',
-            teil : 'http://joo25.loc/teils'
-        };
-
-        xhr.open('GET', api[table], false);
+            page = page ? page : 1;
+            api = {
+                line : 'http://joo25.loc/lines',
+                teil : 'http://joo25.loc/teils'
+            };
+            
+        page = '?page=' + page;
+        
+        xhr.open('GET', api[table] + page, false);
         xhr.send();
 
         if( 200 === xhr.status ) {
-            var res = JSON.parse(xhr.responseText);
-            return res;
+            let res = JSON.parse(xhr.responseText),
+                next = xhr.getResponseHeader("x-pagination-page-count") !==
+                xhr.getResponseHeader("x-pagination-current-page");
+
+            return [
+                res,
+                next
+            ];
         } else {
             //console.log( xhr.status );
-            return -1;
+            return [
+                [],
+                -1
+            ];
         }
     };
     
-    var lines = box.getData('line');
-    var tiles = box.getData('teil');
+    Box.prototype.setData = function(){
+        let page = 1,
+            data = null;
+        do {
+            data = this.getData('line', page);
+            this.lines = this.lines.concat(data[0]);
+            page++;
+        } while ( data[1] && -1 !== data[1] );
+        
+        page = 1,
+        data = null;
+
+        do {
+            data = this.getData('teil', page);
+            this.teils = this.teils.concat(data[0]);
+            page++;
+        } while ( data[1] && -1 !== data[1] );
+        
+    };
+    
+    box.setData();
+    
+//    var lines = box.getData('line')[0];
+//    var teils = box.getData('teil')[0];
+    var lines = box.lines;
+    var teils = box.teils;
     
     lines.forEach(function(item) {
         let line = [ 
-            this.Ox + item.lineFrom.x * this.l,
-            this.Oy + item.lineFrom.y * this.h,
-            this.Ox + item.lineTo.x * this.l,
-            this.Oy + item.lineTo.y * this.h
-        ];
+            this.Ox + item.lineFrom.x * (this.l + this.padding),
+            this.Oy + item.lineFrom.y * (this.h + this.padding),
+            this.Ox + item.lineTo.x * (this.l + this.padding),
+            this.Oy + item.lineTo.y * (this.h + this.padding)
+        ],
+        color = this.lineColors[ ( item.answer ) ? item.answer : 0 ];
         
         canvas
-        .line(line)
-        .stroke({
-            color: 'black',
-            width: 20,
-            linecap: 'round'
-        });
+            .line(line)
+            .stroke({
+                color: color,
+                width: 20,
+                linecap: 'round'
+            })
+            .attr({
+                'data-mark': item.line_id + ' | ' + item.answer
+            });
     }, box);
     
-    tiles.forEach(function(item){
+    teils.forEach(function(item){
         var point = [
-            this.Ox + item.x * this.l,
-            this.Oy + item.y * this.h
+            this.Ox + item.x * (this.l + this.padding),
+            this.Oy + item.y * (this.h + this.padding)
         ], f = null;
+        
+        if ( !item.fill ) {
+            item.fill = this.default.fill;
+        }
         
         if ( item.image !== null ) {
             // image teil
@@ -108,10 +161,14 @@
             let size = [this.l, this.h];
             f = canvas
                 .image('/img/' + item.image)
-                .move(point[0], point[1])
                 .loaded(function(loader) {
+                    let dx = 0;
+                    dx = Math.ceil( (1 - loader.ratio ) * size[0] / 2 );
+                    
                     this.size(size[0]* loader.ratio, size[1] );
+                    this.move(point[0] + dx, point[1]);
                 });
+            //f.move(point[0], point[1]);
         } else {
             // shape teil
             if ( item.l && item.h ) {
@@ -151,7 +208,7 @@
                 });
                 
                 teilText.font({
-                    size: '150',
+                    size: 150,
                     anchor: 'middle'
                 })
                 .move(point[0], point[1]-90*i);

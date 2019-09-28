@@ -36,7 +36,7 @@ class Teils extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['x', 'y', 'l', 'h', 'r', 'size', 'line_to', 'line_id'], 'integer'],
+            [['x', 'y', 'l', 'h', 'r', 'size', 'type'], 'integer'],
             [['text'], 'string'],
             [['fill', 'image'], 'string', 'max' => 255],
         ];
@@ -60,6 +60,7 @@ class Teils extends \yii\db\ActiveRecord
             'size' => 'Size',
             'line_to' => 'Line To',
             'line_id' => 'Line ID',
+            'type' => 'Type',
         ];
     }
 }

@@ -9,7 +9,7 @@ class LeafletAsset extends AssetBundle
         '//unpkg.com/leaflet@1.5.1/dist/leaflet.css',
     ];
     public $js = [
-        'https://unpkg.com/leaflet@1.5.1/dist/leaflet.js',
+        '//unpkg.com/leaflet@1.5.1/dist/leaflet.js',
     ];
     public $cssOptions = [
         'integrity' => 'sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==',

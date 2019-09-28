@@ -2,3 +2,7 @@ RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule . index.php [L]
+
+Header set Access-Control-Allow-Origin 'http://localhost:8080'
+Header set Access-Control-Allow-Methods 'GET, POST, PATCH, PUT, DELETE, OPTIONS'
+Header set Access-Control-Expose-Headers 'X-Pagination-Page-Count, X-Pagination-Current-Page'

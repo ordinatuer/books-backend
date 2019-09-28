@@ -53,9 +53,9 @@ class Lines extends \yii\db\ActiveRecord
         ];
     }
 
-    
+
     public function fields() {
-        return ['line_id','lineFrom','lineTo'];
+        return ['line_id','lineFrom','lineTo', 'answer'];
     }
     
     /**
@@ -64,7 +64,7 @@ class Lines extends \yii\db\ActiveRecord
     public function getLineFrom()
     {
         return $this->hasOne(Teils::className(), ['teil_id' => 'line_from'])
-            //->select(['x', 'y'])
+            ->select(['x', 'y'])
                 ;
     }
 
