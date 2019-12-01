@@ -62,12 +62,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-//        $model = new Lines();
-//        $data = $model->find()->all();
-        
-        return $this->render('index'
-        //, ['data' => $data,]
-        );
+        return $this->render('index');
     }
 
     /**

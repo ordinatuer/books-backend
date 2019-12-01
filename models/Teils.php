@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "teils".
@@ -20,8 +22,10 @@ use Yii;
  * @property int $line_to
  * @property int $line_id
  */
-class Teils extends \yii\db\ActiveRecord
+class Teils extends ActiveRecord
 {
+    public $imagefile;
+    private $imageDir = '/img/';
     /**
      * {@inheritdoc}
      */
@@ -38,10 +42,27 @@ class Teils extends \yii\db\ActiveRecord
         return [
             [['x', 'y', 'l', 'h', 'r', 'size', 'type'], 'integer'],
             [['text'], 'string'],
+            [['imagefile'], 'image', 'extensions' => 'png, jpg'],
             [['fill', 'image'], 'string', 'max' => 255],
         ];
     }
 
+    public function beforeSave($insert)
+    {
+        if ( Yii::$app->request->isPost AND $this->validate() AND 3 == $this->type) {
+            $this->imagefile = UploadedFile::getInstanceByName('imagefile');
+            if (0 === $this->imagefile->error) {
+                $fileName = substr(time(), 2) . '.' . $this->imagefile->extension;
+                $fullName = Yii::getAlias('@webroot') . $this->imageDir . $fileName;
+
+                $this->imagefile->saveAs($fullName);
+
+                $this->image = $fileName;
+            }
+        }
+        
+        return parent::beforeSave($insert);
+    }
     /**
      * {@inheritdoc}
      */
