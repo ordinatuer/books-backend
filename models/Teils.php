@@ -63,6 +63,11 @@ class Teils extends ActiveRecord
         
         return parent::beforeSave($insert);
     }
+
+    public function fields()
+    {
+        return ['image', 'teil_id', 'text', 'type', 'x', 'y', 'size', 'r'];
+    }
     /**
      * {@inheritdoc}
      */
