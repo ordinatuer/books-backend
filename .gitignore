@@ -1,3 +1,4 @@
+books.txt
 # phpstorm project files
 .idea
 
@@ -32,5 +33,5 @@ tests/_support/_generated
 #vagrant folder
 /.vagrant
 
-/web/img
+/web/img/*
 

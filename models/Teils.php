@@ -49,17 +49,24 @@ class Teils extends ActiveRecord
 
     public function beforeSave($insert)
     {
-        if ( Yii::$app->request->isPost AND $this->validate() AND 3 == $this->type) {
+        if (
+            //property_exists(Yii::$app->request, 'isPost') AND // needed for console
+            Yii::$app->request->isPost AND
+             $this->validate() AND
+              3 == $this->type
+          ) {
             $this->imagefile = UploadedFile::getInstanceByName('imagefile');
             if (0 === $this->imagefile->error) {
                 $fileName = substr(time(), 2) . '.' . $this->imagefile->extension;
                 $fullName = Yii::getAlias('@webroot') . $this->imageDir . $fileName;
 
-                $this->imagefile->saveAs($fullName);
+                $flag = $this->imagefile->saveAs($fullName);
 
                 $this->image = $fileName;
             }
         }
+
+
         
         return parent::beforeSave($insert);
     }
