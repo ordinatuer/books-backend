@@ -50,8 +50,6 @@ class Teils extends ActiveRecord
     public function beforeSave($insert)
     {
         if (
-            //property_exists(Yii::$app->request, 'isPost') AND // needed for console
-            Yii::$app->request->isPost AND
              $this->validate() AND
               3 == $this->type
           ) {
@@ -73,7 +71,7 @@ class Teils extends ActiveRecord
 
     public function fields()
     {
-        return ['image', 'teil_id', 'text', 'type', 'x', 'y', 'size', 'r'];
+        return ['image', 'teil_id', 'text', 'type', 'x', 'y','fill', 'size', 'r'];
     }
     /**
      * {@inheritdoc}
