@@ -71,7 +71,16 @@ class Teils extends ActiveRecord
 
     public function fields()
     {
-        return ['image', 'teil_id', 'text', 'type', 'x', 'y','fill', 'size', 'r'];
+        return [
+            'image' => function() {
+                if ($this->image) {
+                    return 'webp-prev/' . $this->image . '.webp';
+                } else {
+                    return null;
+                }
+            },
+            'teil_id', 'text', 'type', 'x', 'y','fill', 'size', 'r'
+        ];
     }
     /**
      * {@inheritdoc}
