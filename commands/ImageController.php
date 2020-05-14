@@ -23,7 +23,9 @@ class ImageController extends Controller
 
 		return ExitCode::OK;
 	}
-
+	/**
+	 *
+	*/
 	private function convert($image_jpg = null)
 	{
 		$output = [];
