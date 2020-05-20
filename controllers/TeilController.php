@@ -5,7 +5,7 @@ use yii\rest\ActiveController;
 use app\controllers\func\ExcludeActions;
 
 class TeilController extends ActiveController {
-    //use ExcludeActions;
+    use ExcludeActions;
 
     public $modelClass = 'app\models\Teils';
     
