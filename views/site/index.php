@@ -1,7 +1,9 @@
 <?php
 
 /* @var $this yii\web\View */
+$name = 'leaflebooks';
 
-$this->title = 'leaflebooks';
+$this->title = $name;
 ?>
-<div id="mapId"></div>
+
+<h1><?=$name?></h1>

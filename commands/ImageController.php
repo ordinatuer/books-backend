@@ -14,13 +14,14 @@ class ImageController extends Controller
 	{
 		$path = \Yii::getAlias('@images');
 
-		$this->convert();
+		//$this->convert();
 		//$files = scandir($path);
 
 		//$im = $this->convert($path.'/'.$files[5]);
 		//print_r($im);
 		//echo "\n" . $path . "\n";
 
+		print($path);
 		return ExitCode::OK;
 	}
 	/**

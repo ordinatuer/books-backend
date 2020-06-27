@@ -53,6 +53,7 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 '/' => 'site/index',
+                '<C>' => 'site/<C>',
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => ['teil', 'line'],

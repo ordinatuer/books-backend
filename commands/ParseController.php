@@ -13,13 +13,36 @@ use yii\console\ExitCode;
 use app\models\Links;
 use app\models\Teils;
 
-/**
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
- */
+use app\commands\parseTmpl\Tmpl;
+
 class ParseController extends Controller
 {    
     const IMAGE_TEIL = 3;
+
+    public function actionTry() 
+    {   
+        $link = "https://www.litres.ru/nil-stivenson/lavina/";
+
+        $doc = new \DOMDocument();
+
+        libxml_use_internal_errors(true);
+        $doc->loadHTMLFile($link);
+        libxml_clear_errors();
+
+        $xpath = new \DOMXpath($doc);
+
+
+        $arr = require __DIR__ . '/parseTmpl/tmpl.php';
+        $result = [];
+
+        foreach ($arr as $name => $tmpl) {
+            $src = $xpath->query($tmpl['xpath']);
+            $result[$name] = $tmpl['find']($src);
+        }
+        
+        print_r($result);
+        return ExitCode::OK;
+    }
 
     public function actionWait()
     {
