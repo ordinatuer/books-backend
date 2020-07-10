@@ -18,31 +18,7 @@ use app\commands\parseTmpl\Tmpl;
 class ParseController extends Controller
 {    
     const IMAGE_TEIL = 3;
-
-    public function actionTry() 
-    {   
-        $link = "https://www.litres.ru/nil-stivenson/lavina/";
-
-        $doc = new \DOMDocument();
-
-        libxml_use_internal_errors(true);
-        $doc->loadHTMLFile($link);
-        libxml_clear_errors();
-
-        $xpath = new \DOMXpath($doc);
-
-
-        $arr = require __DIR__ . '/parseTmpl/tmpl.php';
-        $result = [];
-
-        foreach ($arr as $name => $tmpl) {
-            $src = $xpath->query($tmpl['xpath']);
-            $result[$name] = $tmpl['find']($src);
-        }
-        
-        print_r($result);
-        return ExitCode::OK;
-    }
+    const TMPL_FILE = __DIR__ . '/parseTmpl/tmpl.php';
 
     public function actionWait()
     {
@@ -188,16 +164,8 @@ class ParseController extends Controller
     }
 
     private function get_parse($link)
-    {
+    {   
         //$link = "https://www.litres.ru/nil-stivenson/lavina/";
-        // xpath заголовка 
-        $h1_xpath = "/html/body/div[1]/div[3]/div[2]/div/div[1]/div/div[2]/div[1]/h1/text()";
-
-        // xpath скрипта вставки изображения изображения 
-        $image_xpath = '//*[@id="biblio-book-cover-wrapper"]';
-
-        // жанр
-        $genre_xpath = '//*[@class="biblio_info__link"]';
 
         $doc = new \DOMDocument();
 
@@ -207,35 +175,72 @@ class ParseController extends Controller
 
         $xpath = new \DOMXpath($doc);
 
-        // получение заголовка
-        $find = $xpath->query($h1_xpath);
-        $h1 = $find->item(0)->nodeValue;
 
-        // получение изображения из фрагмента JS кода
-        $find = $xpath->query($image_xpath);
-        $src_text = $find->item(0)->nodeValue;
+        //$arr = require __DIR__ . '/parseTmpl/tmpl.php';
+        $arr = require self::TMPL_FILE;
+        $result = [];
 
-        $src_text = explode("img_path = '", $src_text);
-        $src_text = explode("';", $src_text[1]);
-        $src_image = $src_text[0];
-
-        // получение жанра
-        $find = $xpath->query($genre_xpath);
-        $_genre = [];
-
-        for($i=0;$i<$find->length;$i++) {
-            $_genre[] = $find->item($i)->nodeValue;
+        foreach ($arr as $name => $tmpl) {
+            $src = $xpath->query($tmpl['xpath']);
+            $result[$name] = $tmpl['find']($src);
         }
-
-        $genre = array_shift($_genre);
-
-        $result = [
-            'h1' => $h1,
-            'src_image' => $src_image,
-            'genre' => $genre,
-            'tags' => $_genre,
-        ];
+        
+        $result['genre'] = array_shift($result['genres']);
+        $result['tags'] = $result['genres'];
+        unset($result['genres']);
 
         return $result;
     }
+
+    // private function get_parse($link)
+    // {
+    //     //$link = "https://www.litres.ru/nil-stivenson/lavina/";
+    //     // xpath заголовка 
+    //     $h1_xpath = "/html/body/div[1]/div[3]/div[2]/div/div[1]/div/div[2]/div[1]/h1/text()";
+
+    //     // xpath скрипта вставки изображения изображения 
+    //     $image_xpath = '//*[@id="biblio-book-cover-wrapper"]';
+
+    //     // жанр
+    //     $genre_xpath = '//*[@class="biblio_info__link"]';
+
+    //     $doc = new \DOMDocument();
+
+    //     libxml_use_internal_errors(true);
+    //     $doc->loadHTMLFile($link);
+    //     libxml_clear_errors();
+
+    //     $xpath = new \DOMXpath($doc);
+
+    //     // получение заголовка
+    //     $find = $xpath->query($h1_xpath);
+    //     $h1 = $find->item(0)->nodeValue;
+
+    //     // получение изображения из фрагмента JS кода
+    //     $find = $xpath->query($image_xpath);
+    //     $src_text = $find->item(0)->nodeValue;
+
+    //     $src_text = explode("img_path = '", $src_text);
+    //     $src_text = explode("';", $src_text[1]);
+    //     $src_image = $src_text[0];
+
+    //     // получение жанра
+    //     $find = $xpath->query($genre_xpath);
+    //     $_genre = [];
+
+    //     for($i=0;$i<$find->length;$i++) {
+    //         $_genre[] = $find->item($i)->nodeValue;
+    //     }
+
+    //     $genre = array_shift($_genre);
+
+    //     $result = [
+    //         'h1' => $h1,
+    //         'src_image' => $src_image,
+    //         'genre' => $genre,
+    //         'tags' => $_genre,
+    //     ];
+
+    //     return $result;
+    // }
 }

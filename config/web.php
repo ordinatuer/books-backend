@@ -11,7 +11,7 @@ $config = [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
-    'layout' => 'books/books.php',
+    //'layout' => 'books/books.php',
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -52,12 +52,12 @@ $config = [
             'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
-                '/' => 'site/index',
-                '<C>' => 'site/<C>',
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => ['teil', 'line'],
                 ],
+                '/' => 'site/index',
+                '<C>' => 'site/<C>',
             ],
         ],
     ],
