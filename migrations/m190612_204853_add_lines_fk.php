@@ -47,19 +47,4 @@ class m190612_204853_add_lines_fk extends Migration
             'lines'
         );
     }
-
-    /*
-    // Use up()/down() to run migration code without a transaction.
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "m190612_204853_add_lines_fk cannot be reverted.\n";
-
-        return false;
-    }
-    */
 }

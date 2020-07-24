@@ -5,7 +5,7 @@ use yii\db\Migration;
 /**
  * Class m190609_122854_create_teils
  */
-class m190609_122854_create_teils extends Migration
+class m190609_122854_create_table_teils extends Migration
 {
     /**
      * {@inheritdoc}
@@ -23,8 +23,8 @@ class m190609_122854_create_teils extends Migration
 			'image' => 'string',
 			'text' => 'text',
 			'size' => 'int',
-			'line_to' => 'int',
-			'line_id' => 'int',
+			'type' => 'int',
+			'link_id' => 'int',
 		]);
     }
 
@@ -37,19 +37,4 @@ class m190609_122854_create_teils extends Migration
 		
         return false;
     }
-
-    /*
-    // Use up()/down() to run migration code without a transaction.
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "m190609_122854_create_teils cannot be reverted.\n";
-
-        return false;
-    }
-    */
 }

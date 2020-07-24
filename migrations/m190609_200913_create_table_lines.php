@@ -17,6 +17,7 @@ class m190609_200913_create_table_lines extends Migration
 			'line_from' => 'int',
 			'line_to' => 'int',
 			'path' => 'text',
+            'answer' => 'int',
 		]);
     }
 
@@ -29,19 +30,4 @@ class m190609_200913_create_table_lines extends Migration
 
         return false;
     }
-
-    /*
-    // Use up()/down() to run migration code without a transaction.
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "m190609_200913_create_table_lines cannot be reverted.\n";
-
-        return false;
-    }
-    */
 }
