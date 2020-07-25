@@ -1,9 +1,16 @@
 <?php
-
 /* @var $this yii\web\View */
 $name = 'leaflebooks';
 
 $this->title = $name;
 ?>
+<h1>INDEX</h1>
+<pre>
+<?php
 
-<h1><?=$name?></h1>
+foreach ($tags->teils as $teil) {
+	print $teil->text . "\n";
+}
+
+?>
+</pre>

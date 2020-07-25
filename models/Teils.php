@@ -3,8 +3,12 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\Url;
 use yii\db\ActiveRecord;
 use yii\web\UploadedFile;
+
+use app\models\Links;
+use app\models\Tags;
 
 /**
  * This is the model class for table "teils".
@@ -19,8 +23,8 @@ use yii\web\UploadedFile;
  * @property string $image
  * @property string $text
  * @property int $size
- * @property int $line_to
- * @property int $line_id
+ * @property int $type (1, 2, 3)
+ * @property int $link_id 
  */
 class Teils extends ActiveRecord
 {
@@ -40,7 +44,7 @@ class Teils extends ActiveRecord
     public function rules()
     {
         return [
-            [['x', 'y', 'l', 'h', 'r', 'size', 'type'], 'integer'],
+            [['x', 'y', 'l', 'h', 'r', 'size', 'type', 'link_id'], 'integer'],
             [['text'], 'string'],
             [['imagefile'], 'image', 'extensions' => 'png, jpg'],
             [['fill', 'image'], 'string', 'max' => 255],
@@ -98,9 +102,36 @@ class Teils extends ActiveRecord
             'image' => 'Image',
             'text' => 'Text',
             'size' => 'Size',
-            'line_to' => 'Line To',
-            'line_id' => 'Line ID',
             'type' => 'Type',
+            'link_id' => 'Link ID',
         ];
+    }
+
+    public function getLinks()
+    {
+        return $this->hasOne(Links::className(), ['link_id' => 'link_id']);
+    }
+
+    public function getTags()
+    {
+        return $this->hasMany(Tags::className(), ['tag_id' => 'tag_id'])
+            ->viaTable('tags_rel', ['teil_id' => 'teil_id']);
+    }
+
+    public function picture($full = true)
+    {
+        if ($this->image) {
+            $names = [];
+
+            $home = ( $full ) ? Url::home(true) : '';
+
+            $names['jpg'] = $home . Yii::getAlias('@img-jpg') . '/' . $this->image;
+            $names['webp'] = $home . Yii::getAlias('@img-webp') . '/' . $this->image . '.webp';
+            $names['webp-prev'] = $home . Yii::getAlias('@img-webp-prev') . '/' . $this->image . '.webp';
+
+            return $names;
+        } else {
+            return false;
+        }
     }
 }

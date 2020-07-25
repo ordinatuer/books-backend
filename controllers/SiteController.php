@@ -9,7 +9,6 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
-use app\models\Lines;
 
 class SiteController extends Controller
 {
@@ -62,7 +61,13 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        //$teil = \app\models\Teils::find()->where(['teil_id' => 180])->one();
+        $tags = \app\models\Tags::find()->where(['tag_id' => 2])->one();
+
+        return $this->render('index', [
+            //'teil' => $teil,
+            'tags' => $tags,
+        ]);
     }
 
     /**

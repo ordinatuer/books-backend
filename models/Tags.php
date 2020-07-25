@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use app\models\Teils;
 
 /**
  * This is the model class for table "tags".
@@ -32,6 +33,11 @@ class Tags extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getTeils()
+    {
+        return $this->hasMany(Teils::className(), ['teil_id' => 'teil_id'])
+            ->viaTable('tags_rel', ['tag_id' => 'tag_id']);
+    }
     /**
      * {@inheritdoc}
      */

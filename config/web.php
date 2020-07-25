@@ -10,8 +10,10 @@ $config = [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
+        '@img-jpg' => 'img',
+        '@img-webp' => 'img/webp',
+        '@img-webp-prev' => 'img/webp-prev',
     ],
-    //'layout' => 'books/books.php',
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -57,6 +59,8 @@ $config = [
                     'controller' => ['teil', 'line'],
                 ],
                 '/' => 'site/index',
+                'books/<id:\d+>' => 'books/view',
+                'books' => 'books/index',
                 '<C>' => 'site/<C>',
             ],
         ],

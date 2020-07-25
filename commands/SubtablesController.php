@@ -2,55 +2,53 @@
 
 namespace app\commands;
 
-use yii\helpers\Console;
+use app\helpers\Alias;
+//use yii\helpers\Console;
 use yii\console\Controller;
 use yii\console\ExitCode;
 
 use app\models\Links;
+use app\models\Teils;
 use app\models\Tags;
 use app\models\Genres;
+use app\models\TagsRel;
+use app\models\GenresRel;
 
 class SubtablesController extends Controller
 {
+    public function actionGenreid()
+    {
+        $links = Links::find()->all();
+
+        foreach($links as $link) {
+            $genre_id = $this->getGenreId($link->genre);
+
+            $link->genre_id = $genre_id;
+            $flag = $link->save();
+
+            print $flag . ' | ' . $link->genre . "\n";
+        }
+
+        return ExitCode::OK;
+    }
+
     public function actionTags()
     {
-        $tags_list = [];
-
-        $links = Links::find()->select('tags')->all();
+        $links = Links::find()->all();
 
         foreach ($links as $link) {
-            $tags = explode(',', $link->tags);
+            $tags_list = explode(',', $link->tags);
 
-            foreach($tags as $tag) {
+            foreach($tags_list as $tag) {
                 $tag = trim($tag);
 
-                if (in_array($tag, $tags_list)) {
-                    continue;
-                }
+                $rel = new TagsRel;
 
-                $tags_list[] = $tag;
+                $rel->tag_id = $this->getTagId($tag);
+                $rel->teil_id = $this->getTeilId($link->link_id);
+                $rel->link_id = $link->link_id;
 
-                $tag_already = Tags::find()
-                    ->where([
-                        'tag' => $tag
-                    ])
-                    ->one();
-
-                if (!$tag_already) {
-                    $tag_new = new Tags();
-                    $tag_new->tag = $tag;
-
-                    $tag_add = $tag_new->save();
-                
-
-                    if ($tag_add) {
-                        print("Add " . $tag . "\n");
-                    } else {
-                        print("Чо-то не добавился " . $tag . "\n");
-                    }
-                } else {
-                    print("Уже есть " . $tag . "\n");
-                }
+                $rel->save();                
             }
         }
 
@@ -59,35 +57,74 @@ class SubtablesController extends Controller
 
     public function actionGenres()
     {
-        $genres = [];
+        
+        $links = Links::find()->all();
 
-        $links = Links::find()->select('genre')->all();
-
-        foreach ($links as $link) {
+        foreach($links as $link) {
             $genre = trim($link->genre);
 
-            if (!in_array($genre, $genres)) {
-                $genres[] = $genre;
+            $MGenre = Genres::find()->where(['genre' => $genre])->one();
 
-                $genre_already = Genres::find()->where(['genre'=>$genre])->one();
-                if (!$genre_already) {
-                    $genre_new = new Genres();
-                    $genre_new->genre = $genre;
-                    $genre_add = $genre_new->save();
+            $rel = new GenresRel;
 
-                    if ($genre_add) {
-                        print("Добавлен жанр " . $genre . "\n");
-                    } else {
-                        print("Чо-то не добавился " . $genre . "\n");
-                    }
-                } else {
-                    print('Повтор в базе ' . $genre . "\n");    
-                }
-            } else {
-                print('Повтор в списке ' . $genre . "\n");
-            }
+            $rel->genre_id = $this->getGenreId($genre);
+            $rel->teil_id = $this->getTeilId($link->link_id);
+            $rel->link_id = $link->link_id;
+
+            $rel->save();
         }
 
         return ExitCode::OK;
+    }
+
+    private function getTeilId($link_id)
+    {
+        $teil = Teils::find()
+            ->where(['link_id' => $link_id])
+            ->one();
+
+        if ( $teil ) {
+            return $teil->teil_id;
+        } else {
+            return null;
+        }
+        
+    }
+
+    /**
+     * tag exist - return tag_id
+     * not exist - add it and and return tag_id 
+     *
+     * @property string $tag
+    */
+    private function getTagId($tag)
+    {
+        $MTag = Tags::find()
+            ->where(['tag' => $tag])
+            ->one();
+
+        if ( ! $MTag) {
+            $MTag = new Tags;
+            $MTag->tag = $tag;
+            $MTag->alias = Alias::get($tag, '_');
+            $MTag->save();
+        }
+
+        return $MTag->tag_id;
+    }
+
+    private function getGenreId($genre) {
+        $MGenre = Genres::find()
+            ->where(['genre' => $genre])
+            ->one();
+
+        if ( ! $MGenre ) {
+            $MGenre = new Genres;
+            $MGenre->genre = $genre;
+            $MGenre->alias = Alias::get($genre, '_');
+            $MGenre->save();
+        }
+
+        return $MGenre->genre_id;
     }
 }

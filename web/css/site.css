@@ -2,7 +2,9 @@ html,
 body {
     height: 100%;
 }
-
+.content-block {
+    margin-top: 50px;
+}
 .wrap {
     min-height: 100%;
     height: auto;
@@ -112,4 +114,15 @@ a.desc:after {
 
 .nav > li > form > button.logout:focus {
     outline: none;
+}
+
+
+.book-info h1 {
+    text-align: center;
+}
+.book-img {
+    text-align: center;
+}
+.book-img img {
+    width: 60%;
 }

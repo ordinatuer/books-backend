@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use app\models\Teils;
 
 /**
  * This is the model class for table "links".
@@ -11,6 +12,9 @@ use Yii;
  * @property string $link_text
  * @property string $image
  * @property string $name
+ * @property string $genre
+ * @property string $tags
+ * @property int $genre_id
  */
 class Links extends \yii\db\ActiveRecord
 {
@@ -30,6 +34,7 @@ class Links extends \yii\db\ActiveRecord
         return [
             [['link_text'], 'required'],
             [['link_text', 'image', 'name', 'genre', 'tags'], 'string'],
+            [['genre_id'], 'integer']
         ];
     }
 
@@ -45,6 +50,7 @@ class Links extends \yii\db\ActiveRecord
             'name' => 'Название',
             'genre' => 'Жанр',
             'tags' => 'Тэги',
+            'genre_id' => 'Genre ID',
         ];
     }
 }
