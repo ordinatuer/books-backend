@@ -61,6 +61,8 @@ $config = [
                 '/' => 'site/index',
                 'books/<id:\d+>' => 'books/view',
                 'books' => 'books/index',
+                'tags/<a>' => 'tags/<a>',
+                'tags' => 'tags/index',
                 '<C>' => 'site/<C>',
             ],
         ],

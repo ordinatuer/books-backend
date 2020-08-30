@@ -8,10 +8,10 @@ class BooksController extends \yii\web\Controller
 {
     public function actionIndex()
     {
-        $teils = Teils::find()->all();
+        $teils = Teils::find()->where(['type' => 3]);
 
         return $this->render('index', [
-            'teils' => $teils,
+            'tilesWithImg' => $teils,
         ]);
     }
 

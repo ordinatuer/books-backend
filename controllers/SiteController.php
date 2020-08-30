@@ -61,12 +61,8 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        //$teil = \app\models\Teils::find()->where(['teil_id' => 180])->one();
-        $tags = \app\models\Tags::find()->where(['tag_id' => 2])->one();
-
         return $this->render('index', [
-            //'teil' => $teil,
-            'tags' => $tags,
+            
         ]);
     }
 

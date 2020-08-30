@@ -1,8 +1,9 @@
 <?php
 /* @var $this yii\web\View */
 
-use yii\helpers\Url;
 use app\assets\ListAsset;
+use yii\data\ActiveDataProvider;
+use yii\widgets\ListView;
 
 ListAsset::register($this);
 $name = 'leaflebooks';
@@ -13,22 +14,26 @@ $this->registerMetaTag([
 	'content' => 'All boks on this page',
 ]);
 
+$dataProvider = new ActiveDataProvider([
+	'query' => $tilesWithImg,
+	'pagination' => [
+		'pageSize' => 15,
+	],
+]);
+
+$listView = ListView::widget([
+	'dataProvider' => $dataProvider,
+	'itemView' => '_book',
+	'options' => [
+		'class' => 'flex-container',
+	],
+	'summary' => false,
+	'pager' => [
+		'options' => [
+			'class' => 'pagination col-sm-12',
+		],
+	],
+]);
+
 ?>
-<div class="flex-container">
-<?php
-
-foreach ($teils as $teil) {
-	if (!$teil->image) {continue;}
-?>
-
-	<div class="flex-teil">
-		<a href="<?=Url::base(true) . '/books/' . $teil->teil_id?>">
-			<picture>
-				<source srcset="<?=$teil->picture()['webp-prev']?>" type="image/webp">
-				<img src="<?=$teil->picture()['jpg']?>" title="<?=$teil->text?>" />
-			</picture>
-		</a>
-	</div>
-
-<?php } ?>
-</div>
+<?=$listView;?>
